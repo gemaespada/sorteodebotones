@@ -1,0 +1,392 @@
+/* ==========================================================================
+   Base & Reset
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Color Palette */
+  --bg-gradient: radial-gradient(circle at 50% 20%, #1e1e2f 0%, #0d0e15 100%);
+  --card-bg: rgba(255, 255, 255, 0.04);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  
+  /* Red Button */
+  --red-start: #ef4444;
+  --red-end: #b91c1c;
+  --red-shadow: rgba(239, 68, 68, 0.4);
+  --red-hover: #dc2626;
+
+  /* Blue Button */
+  --blue-start: #3b82f6;
+  --blue-end: #1d4ed8;
+  --blue-shadow: rgba(59, 130, 246, 0.4);
+  --blue-hover: #2563eb;
+
+  /* Status Colors */
+  --win-color: #10b981;
+  --win-bg: rgba(16, 185, 129, 0.12);
+  --loss-color: #f43f5e;
+  --loss-bg: rgba(244, 63, 94, 0.12);
+}
+
+body {
+  font-family: var(--font-family);
+  background: var(--bg-gradient);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Background Confetti Canvas */
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ==========================================================================
+   Container & Card
+   ========================================================================== */
+.game-container {
+  width: 100%;
+  max-width: 580px;
+  position: relative;
+  z-index: 2;
+}
+
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  border-radius: 28px;
+  padding: 2.75rem 2rem;
+  text-align: center;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6),
+              0 0 40px -10px rgba(99, 102, 241, 0.1);
+  transition: transform 0.3s ease;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+.badge {
+  display: inline-block;
+  padding: 0.35rem 0.9rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a5b4fc;
+  margin-bottom: 1rem;
+}
+
+#main-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 0.75rem;
+  background: linear-gradient(135deg, #ffffff 40%, #cbd5e1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  font-weight: 400;
+  line-height: 1.5;
+  margin-bottom: 2.25rem;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ==========================================================================
+   Destiny Buttons
+   ========================================================================== */
+.choice-section {
+  display: flex;
+  gap: 1.25rem;
+  justify-content: center;
+  margin-bottom: 1.75rem;
+}
+
+.destiny-btn {
+  flex: 1;
+  max-width: 220px;
+  padding: 1.5rem 1rem;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-icon {
+  font-size: 2.2rem;
+  transition: transform 0.25s ease;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25));
+}
+
+.destiny-btn.btn-red {
+  background: linear-gradient(145deg, var(--red-start), var(--red-end));
+  box-shadow: 0 10px 25px -5px var(--red-shadow),
+              inset 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+.destiny-btn.btn-red:hover:not(:disabled) {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 16px 30px -4px var(--red-shadow),
+              inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.destiny-btn.btn-blue {
+  background: linear-gradient(145deg, var(--blue-start), var(--blue-end));
+  box-shadow: 0 10px 25px -5px var(--blue-shadow),
+              inset 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+.destiny-btn.btn-blue:hover:not(:disabled) {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 16px 30px -4px var(--blue-shadow),
+              inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.destiny-btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+}
+
+.destiny-btn:hover:not(:disabled) .btn-icon {
+  transform: scale(1.15) rotate(6deg);
+}
+
+.destiny-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  filter: grayscale(40%);
+  transform: none !important;
+}
+
+.destiny-btn.selected {
+  opacity: 1 !important;
+  filter: none !important;
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+  transform: scale(1.04) !important;
+}
+
+/* ==========================================================================
+   Result Area
+   ========================================================================== */
+.result-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1.75rem;
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.result-container.hidden {
+  display: none;
+}
+
+.result-badge {
+  width: 100%;
+  padding: 1.5rem;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid transparent;
+}
+
+.result-badge.win {
+  background: var(--win-bg);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.result-badge.win .result-title {
+  color: var(--win-color);
+}
+
+.result-badge.loss {
+  background: var(--loss-bg);
+  border-color: rgba(244, 63, 94, 0.3);
+}
+
+.result-badge.loss .result-title {
+  color: var(--loss-color);
+}
+
+.result-emoji {
+  font-size: 2.8rem;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  animation: bounce 0.6s ease;
+}
+
+.result-title {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+
+.result-description {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* Reset / Play Again Button */
+.btn-reset {
+  background: #ffffff;
+  color: #0f172a;
+  border: none;
+  border-radius: 14px;
+  padding: 0.9rem 1.8rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
+}
+
+.btn-reset:hover {
+  background: #f1f5f9;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(255, 255, 255, 0.25);
+}
+
+.btn-reset:active {
+  transform: translateY(1px);
+}
+
+.reset-icon {
+  transition: transform 0.3s ease;
+}
+
+.btn-reset:hover .reset-icon {
+  transform: rotate(-90deg);
+}
+
+/* ==========================================================================
+   Scoreboard
+   ========================================================================== */
+.scoreboard {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.score-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 1rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.win-pill .score-number {
+  color: var(--win-color);
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.loss-pill .score-number {
+  color: var(--loss-color);
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .card {
+    padding: 2rem 1.25rem;
+    border-radius: 22px;
+  }
+
+  #main-title {
+    font-size: 2rem;
+  }
+
+  .choice-section {
+    gap: 0.75rem;
+  }
+
+  .destiny-btn {
+    padding: 1.25rem 0.75rem;
+    font-size: 1.1rem;
+  }
+
+  .btn-icon {
+    font-size: 1.8rem;
+  }
+
+  .result-title {
+    font-size: 1.65rem;
+  }
+}
